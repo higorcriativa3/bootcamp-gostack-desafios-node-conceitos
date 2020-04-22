@@ -17,7 +17,7 @@ app.get("/repositories", (req, res) => {
 app.post("/repositories", (req, res) => {
   const { title, url, techs } = req.body;
 
-  const repo = {  id: uuid(), title, url, techs, like: 0 };
+  const repo = {  id: uuid(), title, url, techs, likes: 0 };
 
   repositories.push(repo);
 
@@ -40,7 +40,8 @@ app.put("/repositories/:id", (req, res) => {
     id,
     title,
     url,
-    techs
+    techs,
+    likes: repositories[repoIndex].likes,
   };
 
   repositories[repoIndex] = repo;
@@ -75,13 +76,9 @@ app.post("/repositories/:id/like", (req, res) => {
     return res.status(400).json({ error: 'Repositorie not found!' });
   }
 
-  const repo = repositories[repoIndex];
+  repositories[repoIndex].likes += 1;
 
-  const likePlusOne = repo.like + 1;
-
-  repo.like = likePlusOne;
-
-  return res.json(`Repositório: ${repo.title}, Likes: ${repo.like}`);
+  return res.json(repositories[repoIndex]);
 });
 
 module.exports = app;
